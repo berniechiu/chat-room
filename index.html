@@ -31,7 +31,15 @@
   </div>
   <script>
     $(function() {
-      let socket = io.connect();
+      const socket = io.connect();
+      const $chat = $('#chat');
+      const $messageForm = $chat.find('#message-form');
+      const $message = $messageForm.find('#message');
+
+      $messageForm.submit((e) => {
+        e.preventDefault();
+        socket.emit('send message', $message.val());
+      });
     });
   </script>
 </body>
