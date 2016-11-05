@@ -15,6 +15,10 @@ console.log('Server running...');
 app.get('/', (req, res) => {
   res.sendFile(`${__dirname}/index.html`);
 });
+app.get('/main.css', (req, res) => {
+  res.sendFile(`${__dirname}/css/main.css`);
+});
+
 
 io.sockets.on('connection', (socket) => {
   connections.push(socket);
