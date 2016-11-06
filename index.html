@@ -16,16 +16,15 @@
         </div>
       </div>
       <div class="col-md-8">
-        <div id="chat" class="chat">
-          <form id="message-form">
-            <div class="form-group">
-              <label>Enter Message</label>
-              <textarea id="message" class="form-control" cols="30" rows="10"></textarea>
-              <br />
-              <input type="submit" class="btn btn-primary" value="Send Message" />
-            </div>
-          </form>
-        </div>
+        <div id="chat" class="chat"></div>
+        <form id="message-form">
+          <div class="form-group">
+            <label>Enter Message</label>
+            <textarea id="message" class="form-control" cols="30" rows="10"></textarea>
+            <br />
+            <input type="submit" class="btn btn-primary" value="Send Message" />
+          </div>
+        </form>
       </div>
     </div>
   </div>
@@ -33,12 +32,17 @@
     $(function() {
       const socket = io.connect();
       const $chat = $('#chat');
-      const $messageForm = $chat.find('#message-form');
+      const $messageForm = $('#message-form');
       const $message = $messageForm.find('#message');
 
       $messageForm.submit((e) => {
         e.preventDefault();
         socket.emit('send message', $message.val());
+        $message.val('');
+      });
+
+      socket.on('new message', (data) => {;
+        $chat.append(`<div class="well">${data.msg}</div>`);
       });
     });
   </script>
