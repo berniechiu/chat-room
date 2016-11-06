@@ -8,7 +8,19 @@
 </head>
 <body>
   <div class="container">
-    <div class="row">
+    <div id="user-form-area" class="row">
+      <div class="col-md-12">
+        <form id="user-form">
+          <div class="form-group">
+            <label>Enter Username</label>
+            <input id="username" class="form-control" />
+            <br />
+            <input type="submit" class="btn btn-primary" value="Login" />
+          </div>
+        </form>
+      </div>
+    </div>
+    <div id="message-area" class="row">
       <div class="col-md-4">
         <div class="well">
           <h3>Online Users</h3>
@@ -31,9 +43,16 @@
   <script>
     $(function() {
       const socket = io.connect();
-      const $chat = $('#chat');
-      const $messageForm = $('#message-form');
+
+      const $messageArea = $('#message-area');
+      const $chat = $messageArea.find('#chat');
+      const $messageForm = $messageArea.find('#message-form');
       const $message = $messageForm.find('#message');
+      const $users = $messageArea.find('#users');
+
+      const $userFormArea = $('#user-form-area');
+      const $userForm = $userFormArea.find('#user-form');
+      const $username = $userFormArea.find('#username');
 
       $messageForm.submit((e) => {
         e.preventDefault();
@@ -43,6 +62,25 @@
 
       socket.on('new message', (data) => {;
         $chat.append(`<div class="well">${data.msg}</div>`);
+      });
+
+      $userForm.submit((e) => {
+        e.preventDefault();
+        socket.emit('new user', $username.val(), (has_new_user) => {
+          if (has_new_user) {
+            $userForm.hide();
+            $messageArea.show();
+          }
+        });
+        $username.val('');
+      });
+
+      socket.on('get users', (data) => {
+        const $userListItem = $('<li class="list-group-item">');
+        $users.html('');
+        data.users.forEach(username => {
+          $users.append($userListItem.text(username));
+        })
       });
     });
   </script>

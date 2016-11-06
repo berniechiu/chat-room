@@ -26,6 +26,10 @@ io.sockets.on('connection', (socket) => {
 
   // Disconnect
   socket.on('disconnect', (data) => {
+    if (socket.username) {
+      users.splice(connections.indexOf(socket.username), 1);
+      updateUsernames();
+    }
     connections.splice(connections.indexOf(socket), 1);
     console.log(`Disconnected: ${connections.length} sockets connected`);
   });
@@ -34,4 +38,21 @@ io.sockets.on('connection', (socket) => {
   socket.on('send message', (data) => {
     io.sockets.emit('new message', { msg: data });
   });
+
+  // New User
+  socket.on('new user', (data, showMessageDialog) => {
+    if (!data) {
+      showMessageDialog(false);
+      return;
+    }
+    showMessageDialog(true);
+    socket.username = data;
+    users.push(socket.username);
+    updateUsernames();
+  });
+
+  // Update Current Connected Users
+  function updateUsernames() {
+    io.sockets.emit('get users', { users: users });
+  }
 });
