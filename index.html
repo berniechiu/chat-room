@@ -61,7 +61,7 @@
       });
 
       socket.on('new message', (data) => {;
-        $chat.append(`<div class="well">${data.msg}</div>`);
+        $chat.append(`<div class="well"><strong>${data.user}:</strong> ${data.msg}</div>`);
       });
 
       $userForm.submit((e) => {
@@ -76,10 +76,9 @@
       });
 
       socket.on('get users', (data) => {
-        const $userListItem = $('<li class="list-group-item">');
-        $users.html('');
+        $users.html(null);
         data.users.forEach(username => {
-          $users.append($userListItem.text(username));
+          $users.append($('<li class="list-group-item">').text(username));
         })
       });
     });
